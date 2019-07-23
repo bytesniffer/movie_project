@@ -395,7 +395,7 @@ def play(id=None, page=None):
     movie.playnum = movie.playnum + 1
     db.session.add(movie)
     db.session.commit()
-    return render_template("home/play.html", movie=movie, form=form, page_data=page_data)
+    return render_template("home/stream.html", movie=movie, form=form, page_data=page_data)
 
 
 @home.route("/video/<int:id>/<int:page>/", methods=["GET", "POST"])

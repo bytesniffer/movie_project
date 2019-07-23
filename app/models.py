@@ -16,9 +16,13 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True)  # 邮箱
     phone = db.Column(db.String(11), unique=True)  # 手机号
     info = db.Column(db.Text)  # 个性简介
-    face = db.Column(db.String(255), unique=True)  # 头像
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 注册时间
+    face = db.Column(db.String(255))  # 头像
+
+    # addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 注册时间
     uuid = db.Column(db.String(255), unique=True)  # 唯一标识符
+    create_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
     # （下面是设置外键的第二步,指向Userlog模型，进行一个互相关系的绑定）
     userlogs = db.relationship('Userlog', backref='user')  # 会员日志外键关系关联
     comments = db.relationship('Comment', backref='user')  # 评论外键关系关联
@@ -34,25 +38,33 @@ class User(db.Model):
 
 # 会员登录日志
 class Userlog(db.Model):
-    __tablename__ = "userlog"
+    __tablename__ = "user_log"
     __table_args__ = {"useexisting": True}
     id = db.Column(db.Integer, primary_key=True)  # 编号
     # （下面是设置外键的第一步）:指向user表的id字段
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # 所属会员
     ip = db.Column(db.String(100))  # ip地址
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 登录时间
+    create_time = db.Column(db.DateTime, index=False)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
 
     def __repr__(self):
         return '<User %r>' % self.id
 
 
 # 标签
-class Tag(db.Model):
-    __tablename__ = "tag"
+class Movietype(db.Model):
+    __tablename__ = "movie_type"
     __table_args__ = {"useexisting": True}
-    id = db.Column(db.Integer, primary_key=True)  # 编号
+    id = db.Column(db.CHAR(8), primary_key=True)  # 编号
     name = db.Column(db.String(100), unique=True)  # 标题
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加电影时间
+    en = db.Column(db.String(100))
+    sort = db.Column(db.SMALLINT(5))
+    group_id = db.Column(db.CHAR(5))
+    create_time = db.Column(db.DateTime, index=False)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
+    #addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加电影时间
     # （设置外键的第二步）关联模型，相互关系
     movies = db.relationship("Movie", backref='tag')  # 电影外键关系关联
 
@@ -65,19 +77,32 @@ class Movie(db.Model):
     __tablename__ = "movie"
     __table_args__ = {"useexisting": True}
     id = db.Column(db.Integer, primary_key=True)  # 编号
-    title = db.Column(db.String(255), unique=True)  # 标题
-    url = db.Column(db.String(255), unique=True)  # 地址
+    title = db.Column(db.String(255))  # 标题
+    total_episode = db.Column(db.INT(5), comment='total episode')
+    update_episode = db.Column(db.INT(5), comment='updated episode')
+    url = db.Column(db.String(255))  # 地址
+    year = db.Column(db.INT(4))
+    poster = db.Column(db.String(255))  # 封面
+    actors = db.Column(db.String(100))
+    director = db.Column(db.String(45))
+    writer = db.Column(db.String(45))
     info = db.Column(db.Text)  # 电影简介
-    logo = db.Column(db.String(255), unique=True)  # 封面
+    #  （设置外键第一步）
+    type_id = db.Column(db.CHAR(8), db.ForeignKey('movie_type.id'))  # 所属类型
+    type_group_id = db.Column(db.CHAR(5), nullable=False)  # 所属标签
+    remark = db.Column(db.String(45), comment='quality of movie')
     star = db.Column(db.SmallInteger)  # 星级
     playnum = db.Column(db.BigInteger)  # 播放量
     commentnum = db.Column(db.BigInteger)  # 评论量
-    #  （设置外键第一步）
-    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'))  # 所属标签
+    language = db.Column(db.String(25))
+    source = db.Column(db.String(15), comment='resource provider code')
+    source_id = db.Column(db.INT(5), comment='original resource id on provider side')
     area = db.Column(db.String(255))  # 上映地区
-    release_time = db.Column(db.Date)  # 上映时间
     length = db.Column(db.String(100))  # 播放时间
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
+    release_time = db.Column(db.Date)  # 上映时间
+    create_time = db.Column(db.DateTime, index=False)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
     comments = db.relationship("Comment", backref='movie')  # 评论外键关系关联
     moviecols = db.relationship("Moviecol", backref='movie')  # 收藏外键关系关联
 
@@ -91,8 +116,16 @@ class Preview(db.Model):
     __table_args__ = {"useexisting": True}
     id = db.Column(db.Integer, primary_key=True)  # 编号
     title = db.Column(db.String(255), unique=True)  # 标题
-    logo = db.Column(db.String(255), unique=True)  # 封面
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
+    poster = db.Column(db.String(255), unique=True)  # 封面
+    actors = db.Column(db.String(100))
+    remark = db.Column(db.String(45), comment='quality of movie')
+    total_episode = db.Column(db.INT(5), comment='total episode')
+    update_episode = db.Column(db.INT(5), comment='updated episode')
+    type_id = db.Column(db.CHAR(8), db.ForeignKey('movie_type.id'))  # 所属类型
+    type_group_id = db.Column(db.CHAR(5), nullable=False)  # 所属标签
+    create_time = db.Column(db.DateTime, index=False)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
 
     def __repr__(self):
         return "<Preview %r>" % self.title
@@ -104,10 +137,13 @@ class Comment(db.Model):
     __table_args__ = {"useexisting": True}
     id = db.Column(db.Integer, primary_key=True)  # 编号
     content = db.Column(db.Text)  # 评论内容
+    create_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
     # 关联外键第一步，还要去user表和movie表进行第二步
     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))  # 所属电影
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # 所属用户
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
+    # addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
 
     def __repr__(self):
         return "<Comment %r>" % self.id
@@ -115,13 +151,15 @@ class Comment(db.Model):
 
 # 电影收藏
 class Moviecol(db.Model):
-    __tablename__ = "moviecol"
+    __tablename__ = "movie_collection"
     __table_args__ = {"useexisting": True}
     id = db.Column(db.Integer, primary_key=True)  # 编号
     # 关联外键第一步，还要去user表和movie表进行第二步
     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))  # 所属电影
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # 所属用户
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
+    create_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
 
     def __repr__(self):
         return "<Moviecol %r>" % self.id
@@ -134,7 +172,9 @@ class Auth(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # 编号
     name = db.Column(db.String(100), unique=True)  # 名称
     url = db.Column(db.String(255), unique=True)  # 地址
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
+    create_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
 
     def __repr__(self):
         return "<Auth %r>" % self.name
@@ -146,8 +186,10 @@ class Role(db.Model):
     __table_args__ = {"useexisting": True}
     id = db.Column(db.Integer, primary_key=True)  # 编号
     name = db.Column(db.String(100), unique=True)  # 名称
-    auths = db.Column(db.String(600))  # 角色权限列表
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
+    auths = db.Column(db.String(600))  #
+    create_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
     admins = db.relationship("Admin", backref='role')  # 管理员外键关系关联
 
     def __repr__(self):
@@ -163,7 +205,10 @@ class Admin(db.Model):
     pwd = db.Column(db.String(100))  # 管理员密码
     is_super = db.Column(db.SmallInteger)  # 是否为超级管理员，0为超级管理员
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))  # 所属角色
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
+    create_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
+    # addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
     adminlogs = db.relationship("Adminlog", backref='admin')  # 管理员登录日志外键关系关联
     oplogs = db.relationship("Oplog", backref='admin')  # 管理员操作日志外键关系关联
 
@@ -177,12 +222,14 @@ class Admin(db.Model):
 
 # 管理员登录日志
 class Adminlog(db.Model):
-    __tablename__ = "adminlog"
+    __tablename__ = "admin_log"
     __table_args__ = {"useexisting": True}
     id = db.Column(db.Integer, primary_key=True)  # 编号
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))  # 所属管理员
     ip = db.Column(db.String(100))  # 登录IP
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 登录时间
+    create_time = db.Column(db.DateTime, index=False, default=None)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
 
     def __repr__(self):
         return "<Adminlog %r>" % self.id
@@ -190,36 +237,16 @@ class Adminlog(db.Model):
 
 # 操作日志
 class Oplog(db.Model):
-    __tablename__ = "oplog"
+    __tablename__ = "op_log"
     __table_args__ = {"useexisting": True}
     id = db.Column(db.Integer, primary_key=True)  # 编号
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))  # 所属管理员
     ip = db.Column(db.String(100))  # 操作IP
     reason = db.Column(db.String(600))  # 操作原因
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 登录时间
+    create_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    update_time = db.Column(db.DateTime, index=False, default=datetime.now)  # create time
+    status = db.Column(db.INT(1), index=False, default=0)
 
     def __repr__(self):
         return "<Oplog %r>" % self.id
 
-
-if __name__ == "__main__":
-    db.create_all()
-
-    # 测试数据的插入
-
-    role = Role(
-        name="超级管理员",
-        auths=""
-    )
-    db.session.add(role)
-    db.session.commit()
-    from werkzeug.security import generate_password_hash
-
-    admin = Admin(
-        name="mtianyan",
-        pwd=generate_password_hash("123456"),
-        is_super=0,
-        role_id=1
-    )
-    db.session.add(admin)
-    db.session.commit()

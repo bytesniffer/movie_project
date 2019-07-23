@@ -21,7 +21,6 @@
 ```
 git clone https://github.com/mtianyan/movie_project
 cd movie_project
-pipenv shell
 pip install -r requirement.txt
 # 新建一个movie数据库(自行新建) ; 修改config目录下的base_config中数据库用户密码，管理员用户密码
 python generate_tables.py
