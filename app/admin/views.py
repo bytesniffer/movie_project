@@ -10,7 +10,7 @@ from functools import wraps
 from . import admin
 from flask import render_template, redirect, url_for, flash, session, request, g, abort
 from app.admin.forms import LoginForm, TagForm, MovieForm, PreviewForm, PwdForm, AuthForm, RoleForm, AdminForm
-from app.models import Admin, Tag, Movie, Preview, User, Comment, Moviecol, Oplog, Adminlog, Userlog, Auth, Role
+from app.models import Admin, Movietype, Movie, Preview, User, Comment, Moviecol, Oplog, Adminlog, Userlog, Auth, Role
 from werkzeug.utils import secure_filename
 
 
@@ -219,7 +219,7 @@ def tag_list(page=None):
     if page is None:
         page = 1
     page_data = Tag.query.order_by(
-        Tag.addtime.desc()
+        Tag.create_time.desc()
     ).paginate(page=page, per_page=1)
     return render_template("admin/tag_list.html", page_data=page_data)
 
@@ -291,10 +291,10 @@ def movie_list(page=None):
     if page is None:
         page = 1
     # 进行关联Tag的查询,单表查询使用filter_by 多表查询使用filter进行关联字段的声明
-    page_data = Movie.query.join(Tag).filter(
-        Tag.id == Movie.tag_id
+    page_data = Movie.query.join(Movietype).filter(
+        Movietype.id == Movie.type_id
     ).order_by(
-        Movie.addtime.desc()
+        Movie.create_time.desc()
     ).paginate(page=page, per_page=1)
     return render_template("admin/movie_list.html", page_data=page_data)
 
@@ -402,7 +402,7 @@ def preview_list(page=None):
     if page is None:
         page = 1
     page_data = Preview.query.order_by(
-        Preview.addtime.desc()
+        Preview.create_time.desc()
     ).paginate(page=page, per_page=1)
     return render_template("admin/preview_list.html", page_data=page_data)
 
@@ -458,7 +458,7 @@ def user_list(page=None):
     if page is None:
         page = 1
     page_data = User.query.order_by(
-        User.addtime.desc()
+        User.create_time.desc()
     ).paginate(page=page, per_page=1)
     return render_template("admin/user_list.html", page_data=page_data)
 
@@ -515,7 +515,7 @@ def comment_list(page=None):
         Movie.id == Comment.movie_id,
         User.id == Comment.user_id
     ).order_by(
-        Comment.addtime.desc()
+        Comment.create_time.desc()
     ).paginate(page=page, per_page=1)
     return render_template("admin/comment_list.html", page_data=page_data)
 
@@ -557,7 +557,7 @@ def moviecol_list(page=None):
         Movie.id == Moviecol.movie_id,
         User.id == Moviecol.user_id
     ).order_by(
-        Moviecol.addtime.desc()
+        Moviecol.create_time.desc()
     ).paginate(page=page, per_page=1)
     return render_template("admin/moviecol_list.html", page_data=page_data)
 
@@ -595,7 +595,7 @@ def oplog_list(page=None):
     ).filter(
         Admin.id == Oplog.admin_id,
     ).order_by(
-        Oplog.addtime.desc()
+        Oplog.create_time.desc()
     ).paginate(page=page, per_page=10)
     return render_template("admin/oplog_list.html", page_data=page_data)
 
@@ -614,7 +614,7 @@ def adminloginlog_list(page=None):
     ).filter(
         Admin.id == Adminlog.admin_id,
     ).order_by(
-        Adminlog.addtime.desc()
+        Adminlog.create_time.desc()
     ).paginate(page=page, per_page=1)
     return render_template("admin/adminloginlog_list.html", page_data=page_data)
 
@@ -633,7 +633,7 @@ def userloginlog_list(page=None):
     ).filter(
         User.id == Userlog.user_id,
     ).order_by(
-        Userlog.addtime.desc()
+        Userlog.create_time.desc()
     ).paginate(page=page, per_page=2)
     return render_template("admin/userloginlog_list.html", page_data=page_data)
 
@@ -669,7 +669,7 @@ def role_list(page=None):
     if page is None:
         page = 1
     page_data = Role.query.order_by(
-        Role.addtime.desc()
+        Role.create_time.desc()
     ).paginate(page=page, per_page=2)
     return render_template("admin/role_list.html", page_data=page_data)
 
@@ -741,7 +741,7 @@ def auth_list(page=None):
     if page is None:
         page = 1
     page_data = Auth.query.order_by(
-        Auth.addtime.desc()
+        Auth.create_time.desc()
     ).paginate(page=page, per_page=2)
     return render_template("admin/auth_list.html", page_data=page_data)
 
@@ -817,6 +817,6 @@ def admin_list(page=None):
     ).filter(
         Role.id == Admin.role_id
     ).order_by(
-        Admin.addtime.desc()
+        Admin.create_time.desc()
     ).paginate(page=page, per_page=1)
     return render_template("admin/admin_list.html", page_data=page_data)

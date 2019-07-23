@@ -4,7 +4,7 @@ __date__ = '2017/8/26 17:06'
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FileField, TextAreaField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, ValidationError, EqualTo
-from app.models import Admin, Tag, Auth, Role
+from app.models import Admin, Movietype, Auth, Role
 
 
 class LoginForm(FlaskForm):
@@ -131,7 +131,7 @@ class MovieForm(FlaskForm):
         ],
         coerce=int,
         # 通过列表生成器生成列表, 解决列表生成式 强制转换为list
-        choices=list([(v.id, v.name) for v in Tag.query.all()]),
+        choices=list([(v.id, v.name) for v in Movietype.query.all()]),
         description="标签",
         render_kw={
             "class": "form-control",

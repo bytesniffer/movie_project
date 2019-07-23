@@ -12,7 +12,7 @@ import uuid
 from werkzeug.security import generate_password_hash
 from app import db, app, rd
 from app.home.forms import RegistForm, LoginForm, UserdetailForm, PwdForm, CommentForm
-from app.models import User, Userlog, Preview, Tag, Movie, Comment, Moviecol
+from app.models import User, Userlog, Preview, Movietype, Movie, Comment, Moviecol,Config,Search
 from . import home
 from flask import render_template, url_for, redirect, flash, session, request, Response
 
@@ -263,7 +263,7 @@ def index(page=None):
     """
     首页电影列表
     """
-    tags = Tag.query.all()
+    tags = Movietype.query.all()
     page_data = Movie.query
     # 标签
     tid = request.args.get("tid", 0)
