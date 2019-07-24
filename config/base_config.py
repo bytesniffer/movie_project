@@ -33,7 +33,7 @@ DATABASE = 'movie'
 ADMIN = 'waert'
 ADMIN_PASSWORD = '123456'
 
-SQLALCHEMY_DATABASE_URI = """mysql://{SQL_USER}:{SQL_PASSWORD}@{SQL_URL}:3306/{DATABASE}""".format(
+SQLALCHEMY_DATABASE_URI = """mysql+pymysql://{SQL_USER}:{SQL_PASSWORD}@{SQL_URL}:3306/{DATABASE}""".format(
                           SQL_USER=SQL_USER,
                           SQL_PASSWORD=SQL_PASSWORD,
                           SQL_URL=SQL_URL,

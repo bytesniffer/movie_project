@@ -48,3 +48,10 @@ python manage.py runserver
 有趣的Python群：619417153
 
 欢迎关注简书，star项目！谢谢！你的关注支持是我继续分享前进的动力。
+
+# Python 3
+
+pip3 freeze > requirements.txt 
+
+pip3 install -r requirements.txt 
+

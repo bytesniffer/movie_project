@@ -11,7 +11,6 @@ from flask_redis import FlaskRedis
 
 app = Flask(__name__)
 # 用于连接数据的数据库。
-# app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:mtianyanmysql@115.159.122.64:3306/movie"
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 # 如果设置成 True (默认情况)，Flask-SQLAlchemy 将会追踪对象的修改并且发送信号。
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True

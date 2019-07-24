@@ -218,9 +218,9 @@ def tag_list(page=None):
     """
     if page is None:
         page = 1
-    page_data = Tag.query.order_by(
-        Tag.create_time.desc()
-    ).paginate(page=page, per_page=1)
+    page_data = Movietype.query.order_by(
+        Movietype.create_time.desc()
+    ).paginate(page=page,per_page=10,max_per_page=100)
     return render_template("admin/tag_list.html", page_data=page_data)
 
 
@@ -232,7 +232,7 @@ def tag_del(id=None):
     标签删除
     """
     # filter_by在查不到或多个的时候并不会报错，get会报错。
-    tag = Tag.query.filter_by(id=id).first_or_404()
+    tag = Movietype.query.filter_by(id=id).first_or_404()
     db.session.delete(tag)
     db.session.commit()
     flash("标签<<{0}>>删除成功".format(tag.name), "ok")
