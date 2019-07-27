@@ -96,6 +96,22 @@
                             </td>
                             <td>{{ movie.commentnum }}</td>
                         </tr>
+                       <tr>
+                          <td style="color:#ccc;font-weight:bold;font-style:italic;">
+                            <span class="glyphicon glyphicon-comment"></span>&nbsp;视频源
+                          </td>
+                          <td>
+                            <div>
+                              <select name="play_source" id="play_source">
+                                {% for val in movie.play_list() %}
+                                    <option value="{{val.url}}">
+                                      {{val.name}}
+                                    </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </td>
+                       </tr>
                         <tr>
                             <td style="color:#ccc;font-weight:bold;font-style:italic;">
                                 <span class="glyphicon glyphicon-picture"></span>&nbsp;影片介绍
@@ -201,17 +217,29 @@
 {% block js %}
     <!--播放页面-->
     <script>
-        var dp1 = new DPlayer({
+        var dp = new DPlayer({
             element: document.getElementById('dplayer1'),
             video: {
-                <!-- url: "{{ url_for('static',filename='uploads/'+movie.url) }}", -->
-				url: "https://www.182923.com/20190720/d1jmTlEw/index.m3u8",
+              url: "{{ movie.play_list()[0]['url']}}",
             },
             danmaku: {
                 id: '{{ movie.id }}',
                 api: "/tm/"
             }
         });
+        dp.volume(0.1, true, false);
+        $("#play_source").change(function(){
+          var  url=$("#play_source").val();
+               dp.switchVideo(
+                   { url:url,
+                     type: 'auto',
+                   },
+                   {
+                      id: "{{ movie.id }}",
+                      api: "/tm/"
+                   })
+          dp.play();
+        })
     </script>
     <script>
         var ue = UE.getEditor('input_content', {

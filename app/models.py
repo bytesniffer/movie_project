@@ -106,10 +106,10 @@ class Movie(db.Model):
     #  （设置外键第一步）
     type_id = db.Column(db.CHAR(4), db.ForeignKey('movie_type.id'))  # 所属类型
     type_group_id = db.Column(db.CHAR(2), nullable=False)  # 所属标签
-    remark = db.Column(db.String(15), comment='quality of movie')
-    star = db.Column(db.SmallInteger)  # 星级
-    playnum = db.Column(db.BigInteger)  # 播放量
-    commentnum = db.Column(db.BigInteger)  # 评论量
+    note = db.Column(db.String(15), comment='quality of movie')
+    star = db.Column(db.SmallInteger, default=0)  # 星级
+    playnum = db.Column(db.BigInteger, default=0)  # 播放量
+    commentnum = db.Column(db.BigInteger, default=0)  # 评论量
     language = db.Column(db.String(25))
     source = db.Column(db.String(15), comment='resource provider code')
     source_id = db.Column(db.INT, comment='original resource id on provider side')
@@ -124,6 +124,23 @@ class Movie(db.Model):
 
     def __repr__(self):
         return "<Movie %r>" % self.title
+
+    def name(self, elem):
+        return elem['name']
+
+    def play_list(self):
+        plays = []
+        if self.url:
+            for v in self.url.split('#'):
+                record = v.split('$')
+                play = {}
+                if len(record) > 1:
+                    play['name'] = record[0]
+                    play['url'] = record[1]
+                if play is not None:
+                    plays.append(play)
+        plays.sort(key=self.name)
+        return plays
 
 
 # 上映预告

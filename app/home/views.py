@@ -403,8 +403,8 @@ def video(id=None, page=None):
     """
     弹幕播放器
     """
-    movie = Movie.query.join(Tag).filter(
-        Tag.id == Movie.tag_id,
+    movie = Movie.query.join(Movietype).filter(
+        Movietype.id == Movie.type_id,
         Movie.id == int(id)
     ).first_or_404()
 
@@ -418,7 +418,7 @@ def video(id=None, page=None):
         Movie.id == movie.id,
         User.id == Comment.user_id
     ).order_by(
-        Comment.addtime.desc()
+        Comment.create_time.desc()
     ).paginate(page=page, per_page=10)
 
     movie.playnum = movie.playnum + 1
