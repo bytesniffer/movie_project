@@ -227,17 +227,19 @@
                 api: "/tm/"
             }
         });
-        dp.volume(0.1, true, false);
+        dp.volume(0.01, true, false);
         $("#play_source").change(function(){
-          var  url=$("#play_source").val();
-               dp.switchVideo(
-                   { url:url,
-                     type: 'auto',
-                   },
-                   {
-                      id: "{{ movie.id }}",
-                      api: "/tm/"
-                   })
+
+          dp=new DPlayer({
+            element: document.getElementById('dplayer1'),
+            video: {
+              url: $("#play_source").val(),
+            },
+            danmaku: {
+              id: '{{ movie.id }}',
+              api: "/tm/"
+            }
+          });
           dp.play();
         })
     </script>
