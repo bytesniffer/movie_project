@@ -295,7 +295,7 @@ def movie_list(page=None):
         Movietype.id == Movie.type_id
     ).order_by(
         Movie.create_time.desc()
-    ).paginate(page=page, per_page=1)
+    ).paginate(page=page, per_page=10)
     return render_template("admin/movie_list.html", page_data=page_data)
 
 
