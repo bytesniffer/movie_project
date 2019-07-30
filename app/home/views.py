@@ -308,7 +308,7 @@ def index(page=None):
             )
     if page is None:
         page = 1
-    page_data = page_data.paginate(page=page, per_page=8)
+    page_data = page_data.paginate(page=page, per_page=12)
     p = dict(
         tid=tid,
         star=star,
