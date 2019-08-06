@@ -27,6 +27,8 @@ pip3 freeze > requirements.txt
 
 pip3 install -r requirements.txt 
 
+# Run
+python manage.py runserver
 # TO-DO list
 
 * 电影列表优化　

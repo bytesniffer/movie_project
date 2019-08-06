@@ -7,6 +7,8 @@
     <script src="{{ url_for('static',filename='dplayer/plugin/flv.min.js') }}"></script>
     <script src="{{ url_for('static',filename='dplayer/plugin/hls.min.js') }}"></script>
     <script src="{{ url_for('static',filename='dplayer/dist/DPlayer.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/stackblur.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/video.filter.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.config.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.all.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static',filename='ueditor/lang/zh-cn/zh-cn.js') }}"></script>
@@ -31,6 +33,9 @@
     <div class="row">
         <div class="col-md-8">
             <div id="dplayer1" style="height:500px;width: 774px;"></div>
+            <div id="clean_vod" style="height:450px;width: 774px;">
+              <canvas id="vod_filter"></canvas>
+            </div>
         </div>
         <div class="col-md-4" style="height:500px;">
             <div class="panel panel-info">
@@ -227,9 +232,9 @@
                 api: "/tm/"
             }
         });
-        dp.volume(0.01, true, false);
+        dp.volume(0.4, true, false);
+        dp.play()
         $("#play_source").change(function(){
-
           dp=new DPlayer({
             element: document.getElementById('dplayer1'),
             video: {
@@ -242,6 +247,19 @@
           });
           dp.play();
         })
+    </script>
+    <script>
+      <!--video filter-->
+      var video= document.getElementById("dplayer1").getElementsByClassName("dplayer-video dplayer-video-current")[0];
+      var canvas= document.getElementById("vod_filter");
+      filter(video,canvas);
+      $("#play_source").change(function () {
+        var video = document.getElementById("dplayer1").getElementsByClassName(
+            "dplayer-video dplayer-video-current")[0];
+        var canvas = document.getElementById("vod_filter");
+        filter(video, canvas);
+      });
+
     </script>
     <script>
         var ue = UE.getEditor('input_content', {

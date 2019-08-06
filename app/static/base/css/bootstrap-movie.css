@@ -5,6 +5,9 @@ body {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
+a:link,a:visited{color:#444;text-decoration:none;}
+a:hover{color:#00b606;}
+a{color:#f8f8f8;}
 .alert{
     border-radius:0px;
     margin-bottom:0px;

@@ -263,12 +263,15 @@ def index(page=None):
     """
     首页电影列表
     """
-    tags = Movietype.query.all()
+    movie_tags = Movietype.query.filter(Movietype.group_id == '10').all()
+    tv_tags = Movietype.query.filter(Movietype.group_id == '20').all()
+    art_tags = Movietype.query.filter(Movietype.group_id == '30').all()
+    comic_tags = Movietype.query.filter(Movietype.group_id == '40').all()
     page_data = Movie.query
     # 标签
     tid = request.args.get("tid", 0)
     if int(tid) != 0:
-        page_data = page_data.filter_by(tag_id=int(tid))
+        page_data = page_data.filter_by(type_id=int(tid))
     # 星级
     star = request.args.get("star", 0)
     if int(star) != 0:
@@ -315,6 +318,12 @@ def index(page=None):
         time=time,
         pm=pm,
         cm=cm,
+    )
+    tags = dict(
+          movies=movie_tags,
+          tvs=tv_tags,
+          arts=art_tags,
+          comics=comic_tags
     )
     return render_template(
         "home/index.html",
