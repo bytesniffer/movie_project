@@ -140,6 +140,7 @@ class Movie(db.Model):
     type_id = db.Column(db.CHAR(4), db.ForeignKey('movie_type.id'))  # 所属类型
     type_group_id = db.Column(db.CHAR(2), nullable=False)  # 所属标签
     remark = db.Column(db.String(15), comment='quality of movie')
+    note = db.Column(db.String(15), comment='quality of movie')
     star = db.Column(db.SmallInteger)  # 星级
     playnum = db.Column(db.BigInteger)  # 播放量
     commentnum = db.Column(db.BigInteger)  # 评论量
