@@ -8,14 +8,27 @@
 
 - 基础运行环境安装:
 
-```
-git clone https://github.com/mtianyan/movie_project
-cd movie_project
-pip install -r requirement.txt
-# 新建一个movie数据库(自行新建) ; 修改config目录下的base_config中数据库用户密码，管理员用户密码
-python generate_tables.py
-python manage.py runserver
-```
+
+- redis 
+  ```
+    docker run -p 6379:6379 -v $PWD/data:/data  -d redis:3.2 redis-server --appendonly yes   
+  ```
+- mysql
+
+  ```aidl
+   docker run -p 3306:3306 --name mymysql -v $PWD/conf:/etc/mysql/conf.d -v $PWD/logs:/logs -v $PWD/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.6
+  ```
+
+- run movie project 
+
+  ```
+    git clone https://github.com/mtianyan/movie_project
+    cd movie_project
+    pip install -r requirement.txt
+    # 新建一个movie数据库(自行新建) ; 修改config目录下的base_config中数据库用户密码，管理员用户密码
+    python generate_tables.py
+    python manage.py runserver
+  ```
 
 打开网址: http://127.0.0.1:5000/ 访问首页; http://127.0.0.1:5000/admin 访问后台。
 
